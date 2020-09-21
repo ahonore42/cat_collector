@@ -7,4 +7,5 @@
     <p>Age: {{cat.age}}</p>
 
     <a href="{% url 'cats_update' cat.id %}">Update Details</a>
+    <a href="{% url 'cats_delete' cat.id %}">Delete</a>
 {% endblock %}

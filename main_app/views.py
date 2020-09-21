@@ -24,6 +24,11 @@ class CatUpdate(UpdateView):
         self.object.save()
         # redirect to the specific model instance's display page by adding the pk (id) to the url
         return HttpResponseRedirect('/cats/' + str(self.object.pk))
+
+# DELETE VIEW
+class CatDelete(DeleteView):
+    model = Cat
+    success_url = '/cats'
         
 def index(request):
     return render(request, 'index.html')
