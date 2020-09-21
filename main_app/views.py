@@ -1,7 +1,16 @@
 from django.shortcuts import render
 from .models import Cat
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 # Create your views (these are like your controller actions) here.
+# CREATE VIEW
+# djange will make 
+class CatCreate(CreateView):
+    model = Cat
+    field = '__all__'
+    success_url = '/cats'
+
+
 def index(request):
     return render(request, 'index.html')
 
