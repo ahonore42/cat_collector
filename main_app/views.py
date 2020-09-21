@@ -7,7 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 # djange will make 
 class CatCreate(CreateView):
     model = Cat
-    field = '__all__'
+    fields = '__all__'
     success_url = '/cats'
 
 
