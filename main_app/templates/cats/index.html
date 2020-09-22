@@ -5,7 +5,11 @@
     {% for cat in cats %}
 
         <a href="/cats/{{cat.id}}">
-            <p>Name: {{ cat.name }}</p>
+            <p>{{ cat.name }}</p>
+        </a>
+
+        <a href="/user/{{cat.user.username}}">
+            <p>Adopted by: {{cat.user.username}}</p>
         </a>
 
         {% if cat.age > 0 %}

@@ -10,4 +10,5 @@ urlpatterns = [
     path('cats/<int:pk>/update/', views.CatUpdate.as_view(), name='cats_update'),
     path('cats/<int:pk>/delete/', views.CatDelete.as_view(), name='cats_delete'),
     path('user/<username>/', views.profile, name='profile'),
+    path('login/<username>/', views.login_view, name='login')
 ]

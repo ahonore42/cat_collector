@@ -3,17 +3,33 @@ from .models import Cat
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views (these are like your controller actions) here.
+
+############# USER VIEWS #####################
+
+# USER LOGIN VIEW
+def login_view(request):
+    if request.method == 'POST'
+        # try to log the user in
+    else:
+        # Call in the login form, since this will likely be a GET request
+        form = AuthenticationForm()
+        return render(request, 'login.html', {'form': form})
+
 # USER PROFILE VIEW
 def profile(request, username):
-    user = User.objects.get(username)
+    user = User.objects.get(username=username)
     # grab the user by username
     cats = Cat.objects.filter(user=user)
     # user field in the cat table needs to match
     # cats returned are specific to the username
     return render(request, 'profile.html', {'username': username, 'cats': cats})
     # render the profile html page with the user's cats
+
+############## CAT VIEWS #####################
 
 # CREATE VIEW
 # djange will make a create cat form
@@ -46,7 +62,8 @@ class CatUpdate(UpdateView):
 class CatDelete(DeleteView):
     model = Cat
     success_url = '/cats'
-        
+
+################ DEFAULT VIEWS ###############
 def index(request):
     return render(request, 'index.html')
 
