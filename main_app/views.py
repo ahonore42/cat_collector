@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from .models import Cat
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 # Create your views (these are like your controller actions) here.
 
@@ -23,7 +25,8 @@ def login_view(request):
             # authenticate requires ordered options as parameters
             user = authenticate(username = u, password = p)
             # check for valid user data
-            if user is not None:
+            
+            if user:
                 # if the user's account is not disabled
                 if user.is_active:
                     # login starts a session for the user in django
@@ -33,15 +36,38 @@ def login_view(request):
                 else:
                     print('The account has been disabled')
                     # Todo - handle signup redirect
-            else:
-                print('The username or password is incorrect')
-                # todo handle login redirect
+        else:
+            print('The username or password is incorrect')
+            # todo handle login redirect
+            return HttpResponseRedirect('/login/')
     else:
         # Call in the empty login form, since this will likely be a GET request
         form = AuthenticationForm()
         return render(request, 'login.html', {'form': form})
 
+# USER LOGOUT VIEW
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/cats')
+
+# USER SIGNUP VIEW
+def signup_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return HttpResponseRedirect('/user' + str(user))
+        else:
+            return HttpResponse('<h1>Try Again</h1>')
+    else:
+        # new user form with empty data for GET method
+        form = UserCreationForm()
+        # render the signup html page
+        return render(request, 'signup.html', {'form': form})
+
 # USER PROFILE VIEW
+@login_required
 def profile(request, username):
     user = User.objects.get(username=username)
     # grab the user by username
@@ -55,6 +81,7 @@ def profile(request, username):
 
 # CREATE VIEW
 # djange will make a create cat form
+@method_decorator(login_required, name='dispatch')
 class CatCreate(CreateView):
     model = Cat
     fields = '__all__'
@@ -87,7 +114,7 @@ class CatDelete(DeleteView):
 
 ################ DEFAULT VIEWS ###############
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'base.html')
 
 def about(request):
     return render(request, 'about.html')
