@@ -12,10 +12,32 @@ from django.contrib.auth import authenticate, login, logout
 
 # USER LOGIN VIEW
 def login_view(request):
-    if request.method == 'POST'
+    if request.method == 'POST':
         # try to log the user in
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            # django cleaned username and password data required to pass into options
+            u = form.cleaned_data['username']
+            p = form.cleaned_data['password']
+            # call authenticate and pass in cleaned data as the options
+            # authenticate requires ordered options as parameters
+            user = authenticate(username = u, password = p)
+            # check for valid user data
+            if user is not None:
+                # if the user's account is not disabled
+                if user.is_active:
+                    # login starts a session for the user in django
+                    login(request, user)
+                    # redirect to the user's profile page
+                    return HttpResponseRedirect('/user/' + u)
+                else:
+                    print('The account has been disabled')
+                    # Todo - handle signup redirect
+            else:
+                print('The username or password is incorrect')
+                # todo handle login redirect
     else:
-        # Call in the login form, since this will likely be a GET request
+        # Call in the empty login form, since this will likely be a GET request
         form = AuthenticationForm()
         return render(request, 'login.html', {'form': form})
 
